@@ -1,0 +1,40 @@
+ID	author	iadl ax	variable	ppt	n	stat	effect size
+89	Razani et al., (2009)	DAFS	mmse	dementia	61	pcc	0.79
+88	Razani et al., (2007)	DAFS	mmse	dementia	33	pcc	0.72
+128	Zanetti et al., (1998)	DAFS-IR	mmse	dementia (ad)	93	pcc	0.6
+
+library(meta)
+library(readxl)
+
+data <- read_excel("a_gcog_dafs_dem.xlsx")
+
+library(meta)
+
+meta_analysis <- metacor(
+  cor = data$`effect size`,  # Corrected column name with backticks
+  n = data$n,                # Sample size column
+  studlab = data$author,     # Study labels column
+  data = data,
+  sm = "ZCOR",               # Summary measure for correlations
+  common = FALSE,            # Instead of 'fixed'
+  random = TRUE              # Use a random effects model
+)
+
+
+summary(meta_analysis)
+
+# Create a forest plot with no heterogeneity stats
+forest(meta_analysis,
+       xlab = "Poorer DAFS Score           Better DAFS Score",
+       xlim = c(-0.5, 1),     # Adjust x-axis limits for better spacing
+       print.hetstat = FALSE, # Suppress heterogeneity stats
+       hetstat = FALSE,       # Suppress heterogeneity display
+       colgap.forest = "1.5cm",  # Adjust gap between columns for clarity
+       smlab = "Global Cognition and DAFS (Dementia)",  # Overall summary label
+       leftlabs = c("Study", "n"))  # Rename 'Total' column to 'n'
+
+
+metabias(meta_analysis, method.bias = "linreg", k.min = 3)
+
+funnel(meta_analysis)
+
