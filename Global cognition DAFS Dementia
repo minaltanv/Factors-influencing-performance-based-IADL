@@ -1,8 +1,3 @@
-ID	author	iadl ax	variable	ppt	n	stat	effect size
-89	Razani et al., (2009)	DAFS	mmse	dementia	61	pcc	0.79
-88	Razani et al., (2007)	DAFS	mmse	dementia	33	pcc	0.72
-128	Zanetti et al., (1998)	DAFS-IR	mmse	dementia (ad)	93	pcc	0.6
-
 library(meta)
 library(readxl)
 
