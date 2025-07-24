@@ -1,0 +1,29 @@
+library(meta)
+library(readxl)
+
+data <- read_excel("m_edu_dafsr_nc.xlsx")
+
+meta_analysis <- metacor(
+  cor = data$`effect size`,  # Corrected column name with backticks
+  n = data$n,                # Sample size column
+  studlab = data$author,     # Study labels column
+  data = data,
+  sm = "ZCOR",               # Summary measure for correlations
+  common = FALSE,            # Instead of 'fixed'
+  random = TRUE              # Use a random effects model
+)
+
+summary(meta_analysis)
+
+metabias(meta_analysis, method.bias = "linreg", k.min = 3)
+
+forest(meta_analysis,
+       xlab = "Poorer DAFS-R Score           Better DAFS-R Score ",
+       xlim = c(-0.5, 1),     # Adjust x-axis limits for better spacing
+       print.hetstat = FALSE, # Suppress heterogeneity stats
+       hetstat = FALSE,       # Suppress heterogeneity display
+       colgap.forest = "1.5cm",  # Adjust gap between columns for clarity
+       smlab = "Education and DAFS-R (NC)",  # Overall summary label
+       leftlabs = c("Study", "n"))  # Rename 'Total' column to 'n'
+
+funnel(meta_analysis)
