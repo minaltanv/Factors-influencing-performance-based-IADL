@@ -1,0 +1,38 @@
+study ID	author	iadl ax	variable	ppt	n	stat	effect size
+66	McDougall et al., (2010)	DAFS-R	mmse	nc	45	pcc	0.57
+60	Lima-Silva et al., (2015)	DAFS-R	mmse	nc	34	src	0.24
+86	Puente et al., (2015)b	DAFS-R	mmse	nc	65	pcc	0.684
+29	Duda et al., (2016)	DAFS-R	rbans	nc	53	pcc	0.7
+
+
+library(meta)
+library(readxl)
+
+data <- read_excel("b_gcog_dafsr_nc.xlsx")
+
+library(meta)
+
+meta_analysis <- metacor(
+  cor = data$`effect size`,  # Corrected column name with backticks
+  n = data$n,                # Sample size column
+  studlab = data$author,     # Study labels column
+  data = data,
+  sm = "ZCOR",               # Summary measure for correlations
+  common = FALSE,            # Instead of 'fixed'
+  random = TRUE              # Use a random effects model
+)
+
+summary(meta_analysis)
+
+metabias(meta_analysis, method.bias = "linreg", k.min = 3)
+
+
+forest(meta_analysis,
+       xlab = "Poorer DAFS-R Score           Better DAFS-R Score",
+       xlim = c(-0.5, 1),     # Adjust x-axis limits for better spacing
+       print.hetstat = FALSE, # Suppress heterogeneity stats
+       hetstat = FALSE,       # Suppress heterogeneity display
+       colgap.forest = "1.5cm",  # Adjust gap between columns for clarity
+       smlab = "Global Cognition and DAFS-R (NC)")  # Overall summary label
+
+funnel(meta_analysis)
